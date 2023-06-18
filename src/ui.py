@@ -52,3 +52,7 @@ def ask_for_process_datas(n_of_process):
         print()
 
     return process_datas
+
+
+def end_program():
+    print("========= FIM DO PROGRAMA =========")
