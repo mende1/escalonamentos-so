@@ -1,0 +1,35 @@
+* {
+  padding: 0;
+  border: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.btn {
+  padding: 5px 10px;
+  background-color: #ccc;
+  cursor: pointer;
+  max-width: max-content;
+}
+
+.btn:hover {
+  background-color: #ddd;
+}
+
+.input{
+  padding: 5px;
+  border: 1px solid black;
+  width: 100px;
+}
