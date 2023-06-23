@@ -1,5 +1,5 @@
 let quantum = 2
-var processes = new Array()
+let processes = new Array()
 
 function createProcessesDataCollection() {
   let qtd = document.querySelector('#qtd_process').value
@@ -39,7 +39,6 @@ function CreateProcesses() {
     newProcess.deadline = process.querySelector('#deadline').value
     processes.push(newProcess)
   });
-  console.log(processes)
 }
 
 function CreateTable() {
@@ -89,14 +88,41 @@ function EscalonamentoSJF() {
 
 function ExecuteFIFOAndSJF(processes) {
   let tempo = 0
-  
+  let turnAround = 0
+
   processes.forEach(process => {
     let = tableProcess = document.querySelector(`.${process.nome}`)
+  
+    if(tempo < process.tempoChegada){
+      tempo += parseInt(process.tempoChegada)
+    }
+
     for(let i = 1; i <= process.tempoExecucao; i++){
       let cel = tableProcess.querySelector(`#tempo${i + tempo}`)
-      cel.classList.add('executando')
+      cel.classList.add('executando') 
     }
+
     tempo += parseInt(process.tempoExecucao)
+    turnAround += (tempo - parseInt(process.tempoChegada)) / processes.length
+
+    let total = document.querySelector(`#turnaround`)
+    total.innerHTML = `Turnaround médio: ${turnAround.toFixed(2)}`
+
   });
+
+  let exe = document.querySelector('.execution')
+  exe.innerHTML = '<button class="btn" onclick="ClearTable()">LimparTabela</button>'
 }
 
+function ClearTable() {
+  let table = document.querySelector('#table')
+  table.innerHTML = ''
+  processes = new Array()
+  let exe = document.querySelector('.execution')
+  exe.innerHTML = `<button class="btn" onclick="EscalonamentoFIFO()">FIFO</button>
+  <button class="btn" onclick="EscalonamentoSJF()">SJF</button>
+  <button class="btn">Round Robin</button>
+  <button class="btn">EDF</button>`
+  let total = document.querySelector(`#turnaround`)
+  total.innerHTML = ''
+}
