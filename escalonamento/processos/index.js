@@ -18,10 +18,10 @@ function createProcessesDataCollection() {
     process.innerHTML = `
       <p>Processo <span id="name">${String.fromCharCode(64 + i)}</span></p>
         <div class="process-data">
-          <label for="tempoExecucao">Tempo de execução: </label>
-          <input type="number" name="tempoExecucao" id="tempoExecucao" class="input">
-          <label for="tempoChegada">Tempo de chegada: </label>
-          <input type="number" name="tempoChegada" id="tempoChegada" class="input">
+        <label for="tempoChegada">Tempo de chegada: </label>
+        <input type="number" name="tempoChegada" id="tempoChegada" class="input">
+        <label for="tempoExecucao">Tempo de execução: </label>
+        <input type="number" name="tempoExecucao" id="tempoExecucao" class="input">
           <label for="deadline">Deadline: </label>
           <input type="number" name="deadline" id="deadline" class="input">
         </div>`
