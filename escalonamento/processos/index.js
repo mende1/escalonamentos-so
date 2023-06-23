@@ -88,7 +88,7 @@ function EscalonamentoSJF() {
   let fila = new Array()
 
   for(let tempo = 0; tempo <= 40; tempo++){
-    let filter = processes.filter(process => process.tempoChegada == tempo)
+    let filter = processes.filter(process => process.tempoChegada <= tempo)
     if(filter.length > 0){
       filter.sort((a, b) => {
         return a.tempoExecucao - b.tempoExecucao
@@ -96,10 +96,11 @@ function EscalonamentoSJF() {
 
       filter.forEach(process => {
         fila.push(process)
+        tempo += parseInt(process.tempoExecucao)
+        processes.splice(processes.indexOf(process), 1)
       })
     }
   }
-
   ExecuteFIFOAndSJF(fila) 
 }
 
