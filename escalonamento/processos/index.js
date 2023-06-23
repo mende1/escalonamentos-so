@@ -2,10 +2,11 @@ let quantum = 2
 let processes = new Array()
 
 function createProcessesDataCollection() {
+  ClearTable()
   let qtd = document.querySelector('#qtd_process').value
 
-  if(qtd > 7){
-    return alert('Quantidade máxima de processos é 7')
+  if(qtd > 7 || qtd < 1){
+    return alert('Quantidade de processos deve ser entre 1 e 7')
   }
 
   let processes = document.querySelector('#processes')
@@ -51,7 +52,7 @@ function CreateTable() {
   processes.forEach(process => {
     table.innerHTML += `
       <tr id="processo" class="${process.nome}">
-      <td id="0">${process.nome}</td>
+      <td id="${process.nome}">${process.nome}</td>
       </tr>`
   });
   
@@ -79,11 +80,27 @@ function EscalonamentoFIFO() {
 function EscalonamentoSJF() {
   CreateProcesses()
   CreateTable()
+  
   processes.sort((a, b) => {
-    return a.tempoExecucao - b.tempoExecucao
+    return a.tempoChegada - b.tempoChegada
   })
 
-  ExecuteFIFOAndSJF(processes)
+  let fila = new Array()
+
+  for(let tempo = 0; tempo <= 40; tempo++){
+    let filter = processes.filter(process => process.tempoChegada == tempo)
+    if(filter.length > 0){
+      filter.sort((a, b) => {
+        return a.tempoExecucao - b.tempoExecucao
+      })
+
+      filter.forEach(process => {
+        fila.push(process)
+      })
+    }
+  }
+
+  ExecuteFIFOAndSJF(fila) 
 }
 
 function ExecuteFIFOAndSJF(processes) {
@@ -103,12 +120,13 @@ function ExecuteFIFOAndSJF(processes) {
     }
 
     tempo += parseInt(process.tempoExecucao)
-    turnAround += (tempo - parseInt(process.tempoChegada)) / processes.length
-
-    let total = document.querySelector(`#turnaround`)
-    total.innerHTML = `Turnaround médio: ${turnAround.toFixed(2)}`
-
+    turnAround += (tempo - parseInt(process.tempoChegada))
   });
+
+  turnAround = turnAround / processes.length
+
+  let total = document.querySelector(`#turnaround`)
+  total.innerHTML = `Turnaround médio: ${turnAround.toFixed(2)}`
 
   let exe = document.querySelector('.execution')
   exe.innerHTML = '<button class="btn" onclick="ClearTable()">LimparTabela</button>'
