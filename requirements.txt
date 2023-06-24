@@ -1,2 +1,0 @@
-pysimplegui==4.60.5
-customtkinter==5.1.3
