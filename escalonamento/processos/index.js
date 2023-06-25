@@ -93,33 +93,32 @@ function EscalonamentoSJF() {
       filter.sort((a, b) => {
         return a.tempoExecucao - b.tempoExecucao
       })
-
       filter.forEach(process => {
         fila.push(process)
         tempo += parseInt(process.tempoExecucao)
         processes.splice(processes.indexOf(process), 1)
       })
     }
-  }
+  }  
   ExecuteFIFOAndSJF(fila) 
 }
 
 function ExecuteFIFOAndSJF(processes) {
   let tempo = 0
   let turnAround = 0
-
+  
   processes.forEach(process => {
     let = tableProcess = document.querySelector(`.${process.nome}`)
-  
+    
     if(tempo < process.tempoChegada){
-      tempo += parseInt(process.tempoChegada)
+      tempo = parseInt(process.tempoChegada)
     }
-
+    
     for(let i = 1; i <= process.tempoExecucao; i++){
       let cel = tableProcess.querySelector(`#tempo${i + tempo}`)
       cel.classList.add('executando') 
     }
-
+    
     tempo += parseInt(process.tempoExecucao)
     turnAround += (tempo - parseInt(process.tempoChegada))
   });
