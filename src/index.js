@@ -1,5 +1,30 @@
 let quantum = 2
 let processes = new Array()
+//-------------------------- Criar Tabela e Processos --------------------------//
+function CreateTable() {
+  let table = document.querySelector('#table')
+
+  if(table.innerHTML != ''){
+    return
+  }
+
+  processes.forEach(process => {
+    table.innerHTML += `
+      <tr id="process" class="${process.name}">
+      <td id="${process.name}">${process.name}</td>
+      </tr>`
+  });
+  
+  let tableProcessos = document.querySelectorAll('#process')
+  
+  tableProcessos.forEach(process => {
+    for(let i = 1; i <= 40; i++){
+      process.innerHTML += `
+        <td id="tempo${i}"></td>
+      `
+    }
+  });
+}
 
 function createProcessesDataCollection() {
   ClearTable()
@@ -37,14 +62,6 @@ function createProcessesDataCollection() {
 
     processes.appendChild(process)
   }
-
-  let exe = document.querySelector('.execution')
-  exe.innerHTML = `<button class="btn" onclick="FIFO()">FIFO</button>
-  <button class="btn" onclick="SJF()">SJF</button>
-  <button class="btn">Round Robin</button>
-  <button class="btn">EDF</button>`
-  let total = document.querySelector(`#turnaround`)
-  total.innerHTML = ''
 }
 
 function CreateProcesses() {
@@ -59,30 +76,24 @@ function CreateProcesses() {
   });
 }
 
-function CreateTable() {
-  let table = document.querySelector('#table')
-
-  if(table.innerHTML != ''){
-    return
-  }
-
-  processes.forEach(process => {
-    table.innerHTML += `
-      <tr id="process" class="${process.name}">
-      <td id="${process.name}">${process.name}</td>
-      </tr>`
-  });
-  
-  let tableProcessos = document.querySelectorAll('#process')
-  
-  tableProcessos.forEach(process => {
-    for(let i = 1; i <= 40; i++){
-      process.innerHTML += `
-        <td id="tempo${i}"></td>
-      `
-    }
-  });
+function CreateExecution() {
+  let exe = document.querySelector('.execution')
+  exe.innerHTML = `<button class="btn" onclick="FIFO()">FIFO</button>
+  <button class="btn" onclick="SJF()">SJF</button>
+  <button class="btn">Round Robin</button>
+  <button class="btn">EDF</button>`
+  let total = document.querySelector(`#turnaround`)
+  total.innerHTML = ''
 }
+
+function ClearTable() {
+  let table = document.querySelector('#table')
+  table.innerHTML = ''
+  processes = new Array()
+  CreateExecution()
+}
+
+//-------------------------- Algoritmos --------------------------//
 
 function FIFO() {
   CreateProcesses()
@@ -140,24 +151,12 @@ function ExecuteFIFOAndSJF(processes) {
     turnAround += (time - parseInt(process.arrivalTime))
   });
 
-  turnAround = turnAround / processes.length
+  turnAround /= processes.length
 
   let total = document.querySelector(`#turnaround`)
   total.innerHTML = `Turnaround médio: ${turnAround.toFixed(2)}`
 
   let exe = document.querySelector('.execution')
-  exe.innerHTML = '<button class="btn" onclick="ClearTable()">LimparTabela</button>'
+  exe.innerHTML = '<button class="btn" onclick="ClearTable()">Limpar Tabela</button>'
 }
 
-function ClearTable() {
-  let table = document.querySelector('#table')
-  table.innerHTML = ''
-  processes = new Array()
-  let exe = document.querySelector('.execution')
-  exe.innerHTML = `<button class="btn" onclick="FIFO()">FIFO</button>
-  <button class="btn" onclick="SJF()">SJF</button>
-  <button class="btn">Round Robin</button>
-  <button class="btn">EDF</button>`
-  let total = document.querySelector(`#turnaround`)
-  total.innerHTML = ''
-}
