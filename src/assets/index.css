@@ -11,11 +11,11 @@ td {
   height: 50px;
 }
 
-.sobrecarga {
+.overcharge {
   background-color: red;
 }
 
-.executando {
+.executing {
   background-color: green;
 }
 
