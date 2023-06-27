@@ -1,10 +1,9 @@
-let quantum = 2
 let processes = new Array()
 //-------------------------- Criar Tabela e Processos --------------------------//
 function CreateTable() {
   let table = document.querySelector('#table')
 
-  if(table.innerHTML != ''){
+  if (table.innerHTML != '') {
     return
   }
 
@@ -14,11 +13,11 @@ function CreateTable() {
       <td id="${process.name}">${process.name}</td>
       </tr>`
   });
-  
+
   let tableProcessos = document.querySelectorAll('#process')
-  
+
   tableProcessos.forEach(process => {
-    for(let i = 1; i <= 40; i++){
+    for (let i = 1; i <= 100; i++) {
       process.innerHTML += `
         <td id="tempo${i}"></td>
       `
@@ -30,7 +29,7 @@ function createProcessesDataCollection() {
   ClearTable()
   let qtt = document.querySelector('#qtt_process').value
 
-  if(qtt > 7 || qtt < 1){
+  if (qtt > 7 || qtt < 1) {
     return alert('Quantidade de processos deve ser entre 1 e 7')
   }
 
@@ -39,12 +38,12 @@ function createProcessesDataCollection() {
 
   processes.innerHTML = `
     <label for="quantum">Quantum: </label>
-    <input type="number" name="Quantum do Sistema" id="Quantum" class="input">
+    <input type="number" name="quantum" id="quantum" class="input">
     <label for="overcharge">Sobrecarga do Sistema: </label>
     <input type="number" name="overcharge" id="overcharge" class="input">
   `
 
-  for(i = 1; i <= qtt; i++){
+  for (i = 1; i <= qtt; i++) {
     let process = document.createElement('article')
     process.classList.add('process')
     process.innerHTML = `
@@ -80,8 +79,8 @@ function CreateExecution() {
   let exe = document.querySelector('.execution')
   exe.innerHTML = `<button class="btn" onclick="FIFO()">FIFO</button>
   <button class="btn" onclick="SJF()">SJF</button>
-  <button class="btn">Round Robin</button>
-  <button class="btn">EDF</button>`
+  <button class="btn" onclick="RR()">Round Robin</button>
+  <button class="btn" onclick="EDF()">EDF</button>`
   let total = document.querySelector(`#turnaround`)
   total.innerHTML = ''
 }
@@ -108,16 +107,16 @@ function FIFO() {
 function SJF() {
   CreateProcesses()
   CreateTable()
-  
+
   processes.sort((a, b) => {
     return a.arrivalTime - b.arrivalTime
   })
 
   let order = new Array()
 
-  for(let tempo = 0; tempo <= 40; tempo++){
+  for (let tempo = 0; tempo <= 100; tempo++) {
     let filter = processes.filter(process => process.arrivalTime <= tempo)
-    if(filter.length > 0){
+    if (filter.length > 0) {
       filter.sort((a, b) => {
         return a.executionTime - b.executionTime
       })
@@ -127,26 +126,26 @@ function SJF() {
         processes.splice(processes.indexOf(process), 1)
       })
     }
-  }  
-  ExecuteFIFOAndSJF(order) 
+  }
+  ExecuteFIFOAndSJF(order)
 }
 
 function ExecuteFIFOAndSJF(processes) {
   let time = 0
   let turnAround = 0
-  
+
   processes.forEach(process => {
     let = tableProcess = document.querySelector(`.${process.name}`)
-    
-    if(time < process.arrivalTime){
+
+    if (time < process.arrivalTime) {
       time = parseInt(process.arrivalTime)
     }
-    
-    for(let i = 1; i <= process.executionTime; i++){
+
+    for (let i = 1; i <= process.executionTime; i++) {
       let cel = tableProcess.querySelector(`#tempo${i + time}`)
-      cel.classList.add('executing') 
+      cel.classList.add('executing')
     }
-    
+
     time += parseInt(process.executionTime)
     turnAround += (time - parseInt(process.arrivalTime))
   });
@@ -160,3 +159,78 @@ function ExecuteFIFOAndSJF(processes) {
   exe.innerHTML = '<button class="btn" onclick="ClearTable()">Limpar Tabela</button>'
 }
 
+function RR() {
+  CreateProcesses()
+  CreateTable()
+
+  let quantum = parseInt(document.querySelector('#quantum').value)
+  let overcharge = parseInt(document.querySelector('#overcharge').value)
+  
+  let localProcesses = new Array()
+  processes.forEach(process => {
+    localProcesses.push(process)
+  })
+
+  localProcesses.sort((a, b) => {
+    return a.arrivalTime - b.arrivalTime
+  })
+
+  let time = 0
+  let turnAround = 0
+  let queue = new Array()
+
+  while (localProcesses.length > 0 || queue.length > 0) {
+    updateQueue()
+    let process = queue.shift()
+    let = tableProcess = document.querySelector(`.${process.name}`)
+
+    if (time < process.arrivalTime) {
+      time = parseInt(process.arrivalTime)
+    }
+
+    for (let i = 1; i <= quantum + overcharge; i++) {
+      if (process.executionTime <= 0) {
+        break
+      }
+      let cel = tableProcess.querySelector(`#tempo${i + time}`)
+      cel.classList.add('executing')
+      if (i > quantum) {
+        cel.classList.remove('executing')
+        cel.classList.add('overcharge')
+        if (i == quantum + overcharge) {
+          process.executionTime -= quantum
+          time += quantum + overcharge
+          updateQueue()
+          queue.push(process)
+        }
+      } else if (i == process.executionTime && process.executionTime - quantum <= 0) {
+        time += process.executionTime
+        turnAround += (time - parseInt(process.arrivalTime))
+        updateQueue()
+        break
+      }
+    }
+  }
+  
+  turnAround /= processes.length
+
+  let total = document.querySelector(`#turnaround`)
+  total.innerHTML = `Turnaround médio: ${turnAround.toFixed(2)}`
+
+  let exe = document.querySelector('.execution')
+  exe.innerHTML = '<button class="btn" onclick="ClearTable()">Limpar Tabela</button>'
+
+  function updateQueue() {
+    if (localProcesses.length > 0) {
+      localProcesses.forEach(process => {
+        if (process.arrivalTime <= time) {
+          queue.push(process)
+          localProcesses.splice(localProcesses.indexOf(process), 1)
+        }
+      });
+    }
+    if(queue.length == 0 && localProcesses.length > 0) {
+      time = parseInt(localProcesses[0].arrivalTime)
+    }
+  }
+} 
