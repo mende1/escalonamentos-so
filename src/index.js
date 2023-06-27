@@ -165,7 +165,7 @@ function RR() {
 
   let quantum = parseInt(document.querySelector('#quantum').value)
   let overcharge = parseInt(document.querySelector('#overcharge').value)
-  
+
   let localProcesses = new Array()
   processes.forEach(process => {
     localProcesses.push(process)
@@ -182,7 +182,7 @@ function RR() {
   while (localProcesses.length > 0 || queue.length > 0) {
     updateQueue()
     let process = queue.shift()
-    let = tableProcess = document.querySelector(`.${process.name}`)
+    let tableProcess = document.querySelector(`.${process.name}`)
 
     if (time < process.arrivalTime) {
       time = parseInt(process.arrivalTime)
@@ -194,6 +194,7 @@ function RR() {
       }
       let cel = tableProcess.querySelector(`#tempo${i + time}`)
       cel.classList.add('executing')
+      console.log(cel)
       if (i > quantum) {
         cel.classList.remove('executing')
         cel.classList.add('overcharge')
@@ -204,14 +205,14 @@ function RR() {
           queue.push(process)
         }
       } else if (i == process.executionTime && process.executionTime - quantum <= 0) {
-        time += process.executionTime
+        time += parseInt(process.executionTime)
         turnAround += (time - parseInt(process.arrivalTime))
         updateQueue()
         break
       }
     }
   }
-  
+
   turnAround /= processes.length
 
   let total = document.querySelector(`#turnaround`)
@@ -222,15 +223,17 @@ function RR() {
 
   function updateQueue() {
     if (localProcesses.length > 0) {
-      localProcesses.forEach(process => {
-        if (process.arrivalTime <= time) {
-          queue.push(process)
-          localProcesses.splice(localProcesses.indexOf(process), 1)
+      for (let i = 0; i < localProcesses.length; i++) {
+        if (localProcesses[i].arrivalTime <= time) {
+          queue.push(localProcesses[i])
+          localProcesses.splice(i, 1)
+          i--
         }
-      });
+      }
     }
-    if(queue.length == 0 && localProcesses.length > 0) {
+    if (queue.length == 0 && localProcesses.length > 0) {
       time = parseInt(localProcesses[0].arrivalTime)
+      updateQueue()
     }
   }
 } 
