@@ -11,12 +11,20 @@ td {
   height: 50px;
 }
 
-.overcharge {
-  background-color: red;
+.deadline-brust {
+  background-color: gray;
 }
 
 .executing {
   background-color: green;
+}
+
+.deadline {
+  border-right: red 3px solid;
+}
+
+.overcharge {
+  background-color: red;
 }
 
 .overflow {

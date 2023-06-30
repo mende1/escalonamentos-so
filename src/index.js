@@ -194,7 +194,6 @@ function RR() {
       }
       let cel = tableProcess.querySelector(`#tempo${i + time}`)
       cel.classList.add('executing')
-      console.log(cel)
       if (i > quantum) {
         cel.classList.remove('executing')
         cel.classList.add('overcharge')
@@ -236,4 +235,94 @@ function RR() {
       updateQueue()
     }
   }
-} 
+}
+
+function EDF() {
+  CreateProcesses()
+  CreateTable()
+
+  let quantum = parseInt(document.querySelector('#quantum').value)
+  let overcharge = parseInt(document.querySelector('#overcharge').value)
+  let localProcesses = new Array()
+  
+  processes.forEach(process => {
+    process.deadline = parseInt(process.arrivalTime) + parseInt(process.deadline)
+    localProcesses.push(process)
+  })
+
+  localProcesses.sort((a, b) => {
+    return a.arrivalTime - b.arrivalTime
+  })
+
+  let time = 0
+  let turnAround = 0
+  let queue = new Array()
+
+  while (localProcesses.length > 0 || queue.length > 0) {
+    updateQueue()
+
+    queue.sort((a, b) => {
+      if(a.deadline == b.deadline) {
+        return a.arrivalTime - b.arrivalTime
+      }
+      return a.deadline - b.deadline
+    })
+
+    let process = queue.shift()
+    let tableProcess = document.querySelector(`.${process.name}`)
+
+    if (time < process.arrivalTime) {
+      time = parseInt(process.arrivalTime)
+    }
+
+    for (let i = 1; i <= quantum + overcharge; i++) {
+      if (process.executionTime <= 0) {
+        break
+      }
+      let cel = tableProcess.querySelector(`#tempo${i + time}`)
+      cel.classList.add('executing')
+      if (i + time > process.deadline) {
+        cel.classList.remove('executing')
+        cel.classList.add('deadline-brust')
+      }
+      if (i > quantum) {
+        cel.classList.remove('executing')
+        cel.classList.add('overcharge')
+        if (i == quantum + overcharge) {
+          process.executionTime -= quantum
+          time += quantum + overcharge
+          updateQueue()
+          queue.push(process)
+        }
+      } else if (i == process.executionTime && process.executionTime - quantum <= 0) {
+        time += parseInt(process.executionTime)
+        turnAround += (time - parseInt(process.arrivalTime))
+        updateQueue()
+        break
+      }
+    }
+  }
+
+  turnAround /= processes.length
+
+  let total = document.querySelector(`#turnaround`)
+  total.innerHTML = `Turnaround médio: ${turnAround.toFixed(2)}`
+
+  let exe = document.querySelector('.execution')
+  exe.innerHTML = '<button class="btn" onclick="ClearTable()">Limpar Tabela</button>'
+
+  function updateQueue() {
+    if (localProcesses.length > 0) {
+      for (let i = 0; i < localProcesses.length; i++) {
+        if (localProcesses[i].arrivalTime <= time) {
+          queue.push(localProcesses[i])
+          localProcesses.splice(i, 1)
+          i--
+        }
+      }
+    } if (queue.length == 0 && localProcesses.length > 0) {
+      time = parseInt(localProcesses[0].arrivalTime)
+      updateQueue()
+    }
+  }
+}
