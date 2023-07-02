@@ -248,6 +248,9 @@ function EDF() {
   processes.forEach(process => {
     process.deadline = parseInt(process.arrivalTime) + parseInt(process.deadline)
     localProcesses.push(process)
+    let tableProcess = document.querySelector(`.${process.name}`)
+    let deadline = tableProcess.querySelector(`#tempo${process.deadline}`)
+    deadline.classList.add('deadline')
   })
 
   localProcesses.sort((a, b) => {

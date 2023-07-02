@@ -20,7 +20,7 @@ td {
 }
 
 .deadline {
-  border-right: red 3px solid;
+  border-right: rgb(146, 10, 10) 5px solid;
 }
 
 .overcharge {
