@@ -19,10 +19,32 @@ function CreateTable() {
   tableProcessos.forEach(process => {
     for (let i = 1; i <= 100; i++) {
       process.innerHTML += `
-        <td id="tempo${i}"></td>
+        <td id="tempo${i}">${i % 5 ? '' : i}</td>
       `
     }
   });
+
+  let legend = document.querySelector('#legend')
+  legend.innerHTML = `
+    <h4 class="h4-title">Legenda</h4>
+    <div class="legend-items">
+      <div class="legend-item">
+        <span>Processo em execução:</span>
+        <div class="legend-color executing"></div>
+      </div>
+      <div class="legend-item">
+        <span>Sobrecarga:</span>
+        <div class="legend-color overcharge"></div>
+      </div>
+      <div class="legend-item">
+        <span>Deadline:</span>
+        <div class="legend-color deadline"></div>
+      </div>
+      <div class="legend-item">
+        <span>Estouro de deadline:</span>
+        <div class="legend-color deadline-brust"></div>
+      </div>
+    </div>`
 }
 
 function createProcessesDataCollection() {
@@ -37,17 +59,19 @@ function createProcessesDataCollection() {
   processes.innerHTML = ''
 
   processes.innerHTML = `
-    <label for="quantum">Quantum: </label>
-    <input type="number" name="quantum" id="quantum" class="input">
-    <label for="overcharge">Sobrecarga do Sistema: </label>
-    <input type="number" name="overcharge" id="overcharge" class="input">
+    <div class="time-data">
+      <label for="quantum">Quantum: </label>
+      <input type="number" name="quantum" id="quantum" class="input">
+      <label for="overcharge">Sobrecarga do Sistema: </label>
+      <input type="number" name="overcharge" id="overcharge" class="input">
+    </div>
   `
 
   for (i = 1; i <= qtt; i++) {
     let process = document.createElement('article')
     process.classList.add('process')
     process.innerHTML = `
-      <p>Processo <span id="name">${String.fromCharCode(64 + i)}</span></p>
+      <h2 class="h2-title">Processo <span id="name">${String.fromCharCode(64 + i)}</span></h2>
         <div class="process-data">
           <label for="arrivalTime">Tempo de chegada: </label>
           <input type="number" name="arrivalTime" id="arrivalTime" class="input">
@@ -87,7 +111,9 @@ function CreateExecution() {
 
 function ClearTable() {
   let table = document.querySelector('#table')
+  let legend = document.querySelector('#legend')
   table.innerHTML = ''
+  legend.innerHTML = ''
   processes = new Array()
   CreateExecution()
 }

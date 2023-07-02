@@ -12,11 +12,11 @@ td {
 }
 
 .deadline-brust {
-  background-color: gray;
+  background-color: #bbb;
 }
 
 .executing {
-  background-color: green;
+  background-color: #2CE581;
 }
 
 .deadline {
@@ -24,7 +24,7 @@ td {
 }
 
 .overcharge {
-  background-color: red;
+  background-color: #E03A3A;
 }
 
 .overflow {
@@ -41,10 +41,92 @@ td {
 
 .create-process {
   display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.processes {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.time-data {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.process {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+label {
+  font-size: 1.6rem;
+}
+
+.create-process {
+  display: flex;
   gap: 10px
 }
 
 .process-data {
   display: flex;
   gap: 10px;
+  align-items: center;
+}
+
+.process-data .input {
+  margin-right: 10px;
+} 
+
+.execution {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#turnaround {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+#table {
+  margin-top: 20px;
+}
+
+td {
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.legend {
+  margin-top: 10px;
+  padding: 20px;
+}
+
+.legend span {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.legend-items {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: flex;
+   gap: 10px;
+}
+
+.legend-color {
+  width: 15px;
+  height: 15px;
 }
