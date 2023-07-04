@@ -27,7 +27,7 @@ function createRealMemory() {
   head.innerHTML = ''
   body.innerHTML = ''
 
-  for(let i = 49; i >= 0 ; i--) {
+  for (let i = 49; i >= 0; i--) {
 
     let hrow = document.createElement('tr')
     let brow = document.createElement('tr')
@@ -45,9 +45,12 @@ function createVirtualMemory() {
   let body = disc.querySelector(`tbody`)
   head.innerHTML = ''
   body.innerHTML = ''
-  let pages = [1,2,3,4,5,5,7,8]
+  let pages = []
+  for (let i = 1; i <= 53; i++) {
+    pages.push(i)
+  }
   let filter = pages.filter((value, index, self) => self.indexOf(value) === index)
-  
+
   filter.forEach(page => {
     let hrow = document.createElement('tr')
     let brow = document.createElement('tr')
@@ -61,18 +64,61 @@ function createVirtualMemory() {
 }
 
 function pageFIFO() {
-  let pages = [1,2,3,4,5,5,7,8]
-  pages.forEach(page => {
-    for(let i = 0 ; i < 50 ; i++) {
+  let pages = []
+  for (let i = 1; i <= 53; i++) {
+    pages.push(i)
+  }
+  pages.push(3, 5, 35, 43, 28)
+  let vitima = 0
+
+  while (pages.length > 0) {
+    let page = pages.shift()
+    for (let i = 0; i < 50; i++) {
       let ram = document.querySelector(`#ram-${i}`)
-      let disc = document.querySelector(`#disc-${page}`)
-      if(ram.innerHTML == '') {
-        ram.innerHTML = `<span class="atual-page">${page}<span>`
+
+      if (ram.innerHTML === `<span class="atual-page">${page}</span>`) {
         break
       }
-      else if(ram.innerHTML == `<span class="atual-page">${page}<span>`) {
-        
+
+      if (ram.innerHTML === '') {
+        ram.innerHTML = `<span class="atual-page">${page}</span> `
+        let disc = document.querySelector(`#disc-${page}`)
+        if (disc.innerHTML === '') {
+          disc.innerHTML = `<span class="atual-page">${i}</span> `
+        } else {
+          let oldDiscPages = disc.querySelectorAll('span')
+          oldDiscPages.forEach(oldDiscPage => {
+            oldDiscPage.classList.remove('atual-page')
+            oldDiscPage.classList.add('removed-page')
+          })
+          disc.innerHTML += `<span class="atual-page">${i}</span> `
+        }
+        break
+      } else if (ram.innerHTML !== '' && i === 49) {
+        let ram = document.querySelector(`#ram-${vitima}`)
+        let disc = document.querySelector(`#disc-${page}`)
+        let oldPages = ram.querySelectorAll('span')
+        oldPages.forEach(oldPage => {
+          oldPage.classList.remove('atual-page')
+          oldPage.classList.add('removed-page')
+        })
+        ram.innerHTML += `<span class="atual-page">${page}</span> `
+        if (vitima === 49) {
+          vitima = 0
+        } else {
+          vitima++
+        }
+        if (disc.innerHTML === '') {
+          disc.innerHTML = `<span class="atual-page">${vitima}</span> `
+        } else {
+          let oldDiscPages = disc.querySelectorAll('span')
+          oldDiscPages.forEach(oldDiscPage => {
+            oldDiscPage.classList.remove('atual-page')
+            oldDiscPage.classList.add('removed-page')
+          })
+          disc.innerHTML += `<span class="atual-page">${vitima}</span> `
+        }
       }
     }
-  });
+  }
 }
