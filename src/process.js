@@ -220,10 +220,20 @@ function RR() {
         break
       }
       let cel = tableProcess.querySelector(`#tempo${i + time}`)
-      cel.classList.add('executing')
+      let timeInterval = setInterval(() => {
+        cel.classList.add('executing')
+        if(localProcesses.length == 0 || queue.length == 0){
+          clearInterval(timeInterval)
+        }
+      }, (time + i) * interval);
       if (i > quantum) {
-        cel.classList.remove('executing')
-        cel.classList.add('overcharge')
+        let timeInterval = setInterval(() => {
+          cel.classList.remove('executing')
+          cel.classList.add('overcharge')
+          if(localProcesses.length == 0 || queue.length == 0){
+            clearInterval(timeInterval)
+          }
+        }, (time + i) * interval);
         if (i == quantum + overcharge) {
           process.executionTime -= quantum
           time += quantum + overcharge
@@ -312,14 +322,26 @@ function EDF() {
         break
       }
       let cel = tableProcess.querySelector(`#tempo${i + time}`)
-      cel.classList.add('executing')
+      let timeInterval = setInterval(() => {
+        cel.classList.add('executing')
+      }, (time + i) * interval);
       if (i + time > process.deadline) {
-        cel.classList.remove('executing')
-        cel.classList.add('deadline-brust')
+        setInterval(() => {
+          cel.classList.remove('executing')
+          cel.classList.add('deadline-brust')
+          if(localProcesses.length == 0 || queue.length == 0){
+            clearInterval(timeInterval)
+          }
+        }, (time + i) * interval);
       }
       if (i > quantum) {
-        cel.classList.remove('executing')
-        cel.classList.add('overcharge')
+        let timeInterval = setInterval(() => {
+          cel.classList.remove('executing')
+          cel.classList.add('overcharge')
+          if(localProcesses.length == 0 || queue.length == 0){
+            clearInterval(timeInterval)
+          }
+        }, (time + i) * interval);
         if (i == quantum + overcharge) {
           process.executionTime -= quantum
           time += quantum + overcharge
