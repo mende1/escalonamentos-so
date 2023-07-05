@@ -15,9 +15,8 @@ function createMemoryDataCollection() {
     `
     pages.appendChild(processArticle)
   };
-  createRealMemory()
-  createVirtualMemory()
-  pageFIFO()
+
+  createMemoryExecution()
 }
 
 function createRealMemory() {
@@ -39,17 +38,19 @@ function createRealMemory() {
   }
 }
 
-function createVirtualMemory() {
+function createVirtualMemory(pages) {
   let disc = document.querySelector('#disc')
   let head = disc.querySelector(`thead`)
   let body = disc.querySelector(`tbody`)
   head.innerHTML = ''
   body.innerHTML = ''
-  let pages = []
-  for (let i = 1; i <= 53; i++) {
-    pages.push(i)
-  }
-  let filter = pages.filter((value, index, self) => self.indexOf(value) === index)
+  let localPages = new Array()
+  pages.forEach(page => {
+    localPages.push(page)
+  })
+  
+  localPages = localPages.sort((a, b) => a - b)
+  let filter = localPages.filter((value, index, self) => self.indexOf(value) === index)
 
   filter.forEach(page => {
     let hrow = document.createElement('tr')
@@ -64,28 +65,33 @@ function createVirtualMemory() {
 }
 
 function pageFIFO() {
-  let pages = []
-  for (let i = 1; i <= 53; i++) {
-    pages.push(i)
-  }
-  pages.push(3, 5, 35, 43, 28)
+  let colectPages = document.querySelectorAll('#process-pages')
+  let pages = new Array()
+  colectPages.forEach(colectPage => {
+    let page = colectPage.value.split(' ')
+    page.forEach((p, index) => {
+      if(index < 10)
+      pages.push(p)
+    })
+  })
+
+
   let vitima = 0
+  createRealMemory()
+  createVirtualMemory(pages)
 
   while (pages.length > 0) {
     let page = pages.shift()
     for (let i = 0; i < 50; i++) {
       let ram = document.querySelector(`#ram-${i}`)
-
-      if (ram.innerHTML === `<span class="atual-page">${page}</span>`) {
+      if (ram.innerHTML === `<span class="atual-page">${page}</span> `) {
         break
-      }
-
-      if (ram.innerHTML === '') {
+      } else if (ram.innerHTML === '') {
         ram.innerHTML = `<span class="atual-page">${page}</span> `
         let disc = document.querySelector(`#disc-${page}`)
         if (disc.innerHTML === '') {
           disc.innerHTML = `<span class="atual-page">${i}</span> `
-        } else {
+        } else if (disc.innerHTML !== '') {
           let oldDiscPages = disc.querySelectorAll('span')
           oldDiscPages.forEach(oldDiscPage => {
             oldDiscPage.classList.remove('atual-page')
@@ -94,23 +100,18 @@ function pageFIFO() {
           disc.innerHTML += `<span class="atual-page">${i}</span> `
         }
         break
-      } else if (ram.innerHTML !== '' && i === 49) {
+      } else if (ram.innerHTML !== '' && i == 49) {
         let ram = document.querySelector(`#ram-${vitima}`)
-        let disc = document.querySelector(`#disc-${page}`)
         let oldPages = ram.querySelectorAll('span')
         oldPages.forEach(oldPage => {
           oldPage.classList.remove('atual-page')
           oldPage.classList.add('removed-page')
         })
         ram.innerHTML += `<span class="atual-page">${page}</span> `
-        if (vitima === 49) {
-          vitima = 0
-        } else {
-          vitima++
-        }
+        let disc = document.querySelector(`#disc-${page}`)
         if (disc.innerHTML === '') {
           disc.innerHTML = `<span class="atual-page">${vitima}</span> `
-        } else {
+        } else if (disc.innerHTML !== '') {
           let oldDiscPages = disc.querySelectorAll('span')
           oldDiscPages.forEach(oldDiscPage => {
             oldDiscPage.classList.remove('atual-page')
@@ -118,7 +119,39 @@ function pageFIFO() {
           })
           disc.innerHTML += `<span class="atual-page">${vitima}</span> `
         }
+        if (vitima == 49) {
+          vitima = 0
+        } else {
+          vitima++
+        }
       }
     }
   }
+  removeMemoryExecution()
+}
+
+function createMemoryExecution() {
+  let execution = document.querySelector('#memory-execution')
+  execution.innerHTML = ''
+  execution.innerHTML = `
+    <button class="btn" onclick="pageFIFO()">FIFO</button>
+    <button class="btn" onclick="pageLRU()">LRU</button>`
+
+  let ram = document.querySelector('#ram')
+  let disc = document.querySelector('#disc')
+  let rhead = ram.querySelector(`thead`)
+  let rbody = ram.querySelector(`tbody`)
+  let dhead = disc.querySelector(`thead`)
+  let dbody = disc.querySelector(`tbody`)
+  dhead.innerHTML = ''
+  dbody.innerHTML = ''
+  rhead.innerHTML = ''
+  rbody.innerHTML = ''
+}
+
+function removeMemoryExecution() {
+  let execution = document.querySelector('#memory-execution')
+  execution.innerHTML = ''
+  execution.innerHTML = `
+    <button class="btn" onclick="createMemoryExecution()">Limpar</button>`
 }

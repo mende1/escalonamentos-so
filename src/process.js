@@ -157,7 +157,6 @@ function ExecuteFIFOAndSJF(processes) {
   let time = 0
   let turnAround = 0
   let interval = document.querySelector('#interval').checked ? 500 : 0
-  console.log(document.querySelector('#interval'))
 
   processes.forEach(process => {
     let = tableProcess = document.querySelector(`.processo${process.name}`)
@@ -189,6 +188,7 @@ function ExecuteFIFOAndSJF(processes) {
 function RR() {
   CreateProcesses()
   CreateTable()
+  let interval = document.querySelector('#interval').checked ? 500 : 0
 
   let quantum = parseInt(document.querySelector('#quantum').value)
   let overcharge = parseInt(document.querySelector('#overcharge').value)
@@ -267,6 +267,8 @@ function RR() {
 function EDF() {
   CreateProcesses()
   CreateTable()
+
+  let interval = document.querySelector('#interval').checked ? 500 : 0
 
   let quantum = parseInt(document.querySelector('#quantum').value)
   let overcharge = parseInt(document.querySelector('#overcharge').value)

@@ -45,6 +45,10 @@
   justify-content: center;
 }
 
+.memory-execution {
+  padding: 20px;
+}
+
 .memory-data {
   display: flex;
   gap: 15px;
