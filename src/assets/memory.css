@@ -1,0 +1,70 @@
+.ram td,
+.disc td {
+  width: 100px;
+  height: 30px;
+}
+
+.ram td span,
+.disc td span {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.ram th,
+.disc th {
+  height: 30px;
+  font-size: 1.2rem;
+}
+
+.memory-tables {
+  display: flex;
+  gap: 100px;
+  margin-top: 20px;
+}
+
+.memory-tables p {
+  font-size: 1.5rem;
+  margin-top: 20px;
+}
+
+.removed-page {
+  text-decoration: line-through;
+  font-size: 1.6rem;
+}
+
+.pages {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 1.5rem;
+}
+
+#memory_process {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.memory-execution {
+  padding: 20px;
+}
+
+.memory-data {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.memory-input {
+  width: 250px;
+}
+
+.ram {
+  display: flex;
+  align-items: center;
+}
+
+.disc {
+  display: flex;
+  align-items: center;
+}

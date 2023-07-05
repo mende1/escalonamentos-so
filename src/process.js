@@ -9,7 +9,7 @@ function CreateTable() {
 
   processes.forEach(process => {
     table.innerHTML += `
-      <tr id="process" class="${process.name}">
+      <tr id="process" class="${'processo' + process.name}">
       <td id="${process.name}">${process.name}</td>
       </tr>`
   });
@@ -49,11 +49,8 @@ function CreateTable() {
 
 function createProcessesDataCollection() {
   ClearTable()
+  createMemoryDataCollection()
   let qtt = document.querySelector('#qtt_process').value
-
-  if (qtt > 7 || qtt < 1) {
-    return alert('Quantidade de processos deve ser entre 1 e 7')
-  }
 
   let processes = document.querySelector('#processes')
   processes.innerHTML = ''
@@ -71,7 +68,7 @@ function createProcessesDataCollection() {
     let process = document.createElement('article')
     process.classList.add('process')
     process.innerHTML = `
-      <h2 class="h2-title">Processo <span id="name">${String.fromCharCode(64 + i)}</span></h2>
+      <h2 class="h2-title">Processo <span id="name">${i}</span></h2>
         <div class="process-data">
           <label for="arrivalTime">Tempo de chegada: </label>
           <input type="number" name="arrivalTime" id="arrivalTime" class="input">
@@ -159,9 +156,10 @@ function SJF() {
 function ExecuteFIFOAndSJF(processes) {
   let time = 0
   let turnAround = 0
+  let interval = document.querySelector('#interval').checked ? 500 : 0
 
   processes.forEach(process => {
-    let = tableProcess = document.querySelector(`.${process.name}`)
+    let = tableProcess = document.querySelector(`.processo${process.name}`)
 
     if (time < process.arrivalTime) {
       time = parseInt(process.arrivalTime)
@@ -169,7 +167,9 @@ function ExecuteFIFOAndSJF(processes) {
 
     for (let i = 1; i <= process.executionTime; i++) {
       let cel = tableProcess.querySelector(`#tempo${i + time}`)
-      cel.classList.add('executing')
+      setInterval(() => {
+        cel.classList.add('executing')
+      }, (time + i) * interval);
     }
 
     time += parseInt(process.executionTime)
@@ -188,6 +188,7 @@ function ExecuteFIFOAndSJF(processes) {
 function RR() {
   CreateProcesses()
   CreateTable()
+  let interval = document.querySelector('#interval').checked ? 500 : 0
 
   let quantum = parseInt(document.querySelector('#quantum').value)
   let overcharge = parseInt(document.querySelector('#overcharge').value)
@@ -208,7 +209,7 @@ function RR() {
   while (localProcesses.length > 0 || queue.length > 0) {
     updateQueue()
     let process = queue.shift()
-    let tableProcess = document.querySelector(`.${process.name}`)
+    let tableProcess = document.querySelector(`.processo${process.name}`)
 
     if (time < process.arrivalTime) {
       time = parseInt(process.arrivalTime)
@@ -219,10 +220,20 @@ function RR() {
         break
       }
       let cel = tableProcess.querySelector(`#tempo${i + time}`)
-      cel.classList.add('executing')
+      let timeInterval = setInterval(() => {
+        cel.classList.add('executing')
+        if(localProcesses.length == 0 || queue.length == 0){
+          clearInterval(timeInterval)
+        }
+      }, (time + i) * interval);
       if (i > quantum) {
-        cel.classList.remove('executing')
-        cel.classList.add('overcharge')
+        let timeInterval = setInterval(() => {
+          cel.classList.remove('executing')
+          cel.classList.add('overcharge')
+          if(localProcesses.length == 0 || queue.length == 0){
+            clearInterval(timeInterval)
+          }
+        }, (time + i) * interval);
         if (i == quantum + overcharge) {
           process.executionTime -= quantum
           time += quantum + overcharge
@@ -267,14 +278,16 @@ function EDF() {
   CreateProcesses()
   CreateTable()
 
+  let interval = document.querySelector('#interval').checked ? 500 : 0
+
   let quantum = parseInt(document.querySelector('#quantum').value)
   let overcharge = parseInt(document.querySelector('#overcharge').value)
   let localProcesses = new Array()
-  
+
   processes.forEach(process => {
     process.deadline = parseInt(process.arrivalTime) + parseInt(process.deadline)
     localProcesses.push(process)
-    let tableProcess = document.querySelector(`.${process.name}`)
+    let tableProcess = document.querySelector(`.processo${process.name}`)
     let deadline = tableProcess.querySelector(`#tempo${process.deadline}`)
     deadline.classList.add('deadline')
   })
@@ -291,14 +304,14 @@ function EDF() {
     updateQueue()
 
     queue.sort((a, b) => {
-      if(a.deadline == b.deadline) {
+      if (a.deadline == b.deadline) {
         return a.arrivalTime - b.arrivalTime
       }
       return a.deadline - b.deadline
     })
 
     let process = queue.shift()
-    let tableProcess = document.querySelector(`.${process.name}`)
+    let tableProcess = document.querySelector(`.processo${process.name}`)
 
     if (time < process.arrivalTime) {
       time = parseInt(process.arrivalTime)
@@ -309,14 +322,26 @@ function EDF() {
         break
       }
       let cel = tableProcess.querySelector(`#tempo${i + time}`)
-      cel.classList.add('executing')
+      let timeInterval = setInterval(() => {
+        cel.classList.add('executing')
+      }, (time + i) * interval);
       if (i + time > process.deadline) {
-        cel.classList.remove('executing')
-        cel.classList.add('deadline-brust')
+        setInterval(() => {
+          cel.classList.remove('executing')
+          cel.classList.add('deadline-brust')
+          if(localProcesses.length == 0 || queue.length == 0){
+            clearInterval(timeInterval)
+          }
+        }, (time + i) * interval);
       }
       if (i > quantum) {
-        cel.classList.remove('executing')
-        cel.classList.add('overcharge')
+        let timeInterval = setInterval(() => {
+          cel.classList.remove('executing')
+          cel.classList.add('overcharge')
+          if(localProcesses.length == 0 || queue.length == 0){
+            clearInterval(timeInterval)
+          }
+        }, (time + i) * interval);
         if (i == quantum + overcharge) {
           process.executionTime -= quantum
           time += quantum + overcharge

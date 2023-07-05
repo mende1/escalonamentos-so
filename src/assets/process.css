@@ -57,7 +57,7 @@ td {
   align-items: center;
 }
 
-.process {
+.process ,#memory_process {
   display: flex;
   flex-direction: column;
   gap: 12px;
