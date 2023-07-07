@@ -143,11 +143,9 @@ function SJF() {
       filter.sort((a, b) => {
         return a.executionTime - b.executionTime
       })
-      filter.forEach(process => {
-        order.push(process)
-        tempo += parseInt(process.executionTime)
-        processes.splice(processes.indexOf(process), 1)
-      })
+      order.push(filter[0])
+      tempo += parseInt(filter[0].executionTime)
+      processes.splice(processes.indexOf(filter[0]), 1)
     }
   }
   ExecuteFIFOAndSJF(order)
